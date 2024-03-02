@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="card">
+        <div class="search">
+            <input type="text" id="cityName" placeholder="Enter City Name" spellcheck="false">
+            <button onClick="checkWeather()"><img src="images/search.png"></button>
+        </div>
+        <div class="weather">
+            <img src="images/rain.png" id="weather">
+            <h1 id="temp"></h1>
+            <h2 id="city"></h2>
+            <div class="details">
+                <div class="col">
+                    <img src="images/humidity.png">
+                    <div>
+                        <p id="humidity"></p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="images/wind.png">
+                    <div>
+                        <p id="wind"></p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+
+        const checkWeather = async () => {
+            const cityName = document.getElementById("cityName").value || "ankleshwar"
+            const apiKey = "3c9a5e03e5c47436f5503bbd3d35422f";
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`;
+            
+            const responce = await fetch (apiUrl);
+            var data = await responce.json();
+
+            console.log(data.message);
+            if (data.message == "city not found") {
+                document.getElementById("city").textContent = "city not found";
+                document.getElementById("temp").textContent = "--°C";
+                document.getElementById("humidity").textContent = "-- %";
+                document.getElementById("wind").textContent = "-- % m/s";
+                return;
+            }
+            
+            console.log(data)
+
+            document.getElementById("city").textContent = `${data.name}`;
+            document.getElementById("temp").textContent = `${data.main.temp}°C`;
+            document.getElementById("humidity").textContent = `${data.main.humidity} %`;
+            document.getElementById("wind").textContent = `${data.wind.speed} m/s`;
+            const imagee = document.getElementById("weather") ;
+
+            if (data.weather[0].main == "Clouds") {
+                imagee.src = "images/clouds.png"
+            } else if (data.weather[0].main == "Clear") {
+                imagee.src = "images/clear.png"
+            } else if (data.weather[0].main == "Drizzle") {
+                imagee.src = "images/drizzle.png"
+            } else if (data.weather[0].main == "Snow") {
+                imagee.src = "images/snow.png"
+            } else if (data.weather[0].main == "Mist") {
+                imagee.src = "images/mist.png"
+            } else if (data.weather[0].main == "Rain") {
+                imagee.src = "images/rain.png"
+            }
+            
+        };
+
+        window.onload = checkWeather
+        
+    </script>
+
+</body>
+</html>
